@@ -1,9 +1,15 @@
 #include <PubSubClient.h>
 #include "actuators.h"
+#include "drivers/MotorFanSpeed.h"
+#include "drivers/ServoWB.h"
+#include "drivers/ServoTempChange.h"
 
 static const String mqttServer("192.168.0.155");
 
 static PubSubClient client;
+static ServoTempChange tempServo(3);
+static ServoWB angleServo(4);
+static MotorFanSpeed motor(6, 7, 8);
 
 void reconnect() {
     while (!client.connected()) {
@@ -39,6 +45,7 @@ void callback(char *topic, byte *payload, unsigned int length) {
         if (topic == "tempIndex") {
             int8_t value = (int8_t) atoi(payload.c_str());
 
+            tempServo.setTempChange(value);
             Serial.println("Etiqueta: tempIndex; payload: ");
             Serial.print(payload);
             Serial.print("; valor: ");
@@ -46,6 +53,7 @@ void callback(char *topic, byte *payload, unsigned int length) {
         } else if (topic == "fanSpeed") {
             uint8_t value = (uint8_t) atoi(payload.c_str());
 
+            motor.setFanSpeed(value);
             Serial.println("Etiqueta: tempIndex; payload: ");
             Serial.print(payload);
             Serial.print("; valor: ");
@@ -53,6 +61,7 @@ void callback(char *topic, byte *payload, unsigned int length) {
         } else if (topic == "angle") {
             uint8_t value = (uint8_t) atoi(payload.c_str());
 
+            angleServo.setAngle(value);
             Serial.println("Etiqueta: tempIndex; payload: ");
             Serial.print(payload);
             Serial.print("; valor: ");
