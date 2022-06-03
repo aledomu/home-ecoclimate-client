@@ -5,6 +5,6 @@
 class FanSpeed {
 
     public:
-        virtual void setFanSpeed(int8_t fanSpeed);
+        virtual void setFanSpeed(uint8_t fanSpeed);
 
 };

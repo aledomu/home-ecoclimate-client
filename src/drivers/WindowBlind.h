@@ -5,6 +5,6 @@
 class WindowBlind {
 
     public:
-        virtual void setAngle(int8_t angle);
+        virtual void setAngle(uint8_t angle);
 
 };
