@@ -2,6 +2,6 @@
 
 #include <ESP8266WiFi.h>
 
-void setupActuators(WiFiClient espClient);
+void setupActuators(WiFiClient espClient, String gid);
 
 void handleActuators();

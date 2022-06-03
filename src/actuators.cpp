@@ -10,6 +10,7 @@ static PubSubClient client;
 static ServoTempChange tempServo(3);
 static ServoWB angleServo(4);
 static MotorFanSpeed motor(6, 7, 8);
+static String groupId;
 
 void reconnect() {
     while (!client.connected()) {
@@ -42,7 +43,7 @@ void callback(char *topic, byte *payload, unsigned int length) {
     callbackAdapter(topic, payload, length, [](String topic, String payload) {
         Serial.println("Etiqueta: " + topic + ", mensaje: " + payload);
 
-        if (topic == "tempIndex") {
+        if (topic == groupId + "/tempIndex") {
             int8_t value = (int8_t) atoi(payload.c_str());
 
             tempServo.setTempChange(value);
@@ -50,7 +51,7 @@ void callback(char *topic, byte *payload, unsigned int length) {
             Serial.print(payload);
             Serial.print("; valor: ");
             Serial.println(value);
-        } else if (topic == "fanSpeed") {
+        } else if (topic == groupId + "/fanSpeed") {
             uint8_t value = (uint8_t) atoi(payload.c_str());
 
             motor.setFanSpeed(value);
@@ -58,7 +59,7 @@ void callback(char *topic, byte *payload, unsigned int length) {
             Serial.print(payload);
             Serial.print("; valor: ");
             Serial.println(value);
-        } else if (topic == "angle") {
+        } else if (topic == groupId + "/angle") {
             uint8_t value = (uint8_t) atoi(payload.c_str());
 
             angleServo.setAngle(value);
@@ -70,7 +71,8 @@ void callback(char *topic, byte *payload, unsigned int length) {
     });
 }
 
-void setupActuators(WiFiClient espClient) {
+void setupActuators(WiFiClient espClient, String gid) {
+    groupId = gid;
     PubSubClient client(espClient);
     client.setServer(mqttServer.c_str(), 1883);
     client.setCallback(callback);

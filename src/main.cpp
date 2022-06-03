@@ -32,6 +32,7 @@ void setup_wifi() {
 
 void setup() {
   Serial.begin(9600);
+  setupSensors("unique");
   setup_wifi();
 }
 
