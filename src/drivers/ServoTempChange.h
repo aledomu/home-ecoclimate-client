@@ -1,12 +1,12 @@
 #pragma once
 
-#include <PWMServo.h>
+#include <Servo.h>
 #include "TempChange.h"
 
 class ServoTempChange : public TempChange {
 
     private:
-        PWMServo servo;
+        Servo servo;
 
     public:
         // servoPin: Número de pin al cual la señal del servo está conectado

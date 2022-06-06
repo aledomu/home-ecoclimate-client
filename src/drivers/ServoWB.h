@@ -1,12 +1,12 @@
 #pragma once
 
-#include <PWMServo.h>
+#include <Servo.h>
 #include "WindowBlind.h"
 
 class ServoWB : public WindowBlind {
 
     private:
-        PWMServo servo;
+        Servo servo;
 
     public:
         // pin: Número de pin al cual la señal del servo está conectado

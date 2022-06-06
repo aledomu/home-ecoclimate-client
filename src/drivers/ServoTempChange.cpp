@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "ServoTempChange.h"
 
 ServoTempChange::ServoTempChange(uint8_t servoPin) :
