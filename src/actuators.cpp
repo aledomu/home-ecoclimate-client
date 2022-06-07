@@ -7,9 +7,9 @@
 static const String mqttServer("192.168.0.155");
 
 static PubSubClient client;
-static ServoTempChange tempServo(3);
-static ServoWB angleServo(4);
-static MotorFanSpeed motor(6, 7, 8);
+static ServoTempChange tempServo(16);  // D0
+static ServoWB angleServo(5);          // D1
+static MotorFanSpeed motor(4, 0, 2);   // D2, D3, D4
 static String groupId;
 
 void reconnect() {
