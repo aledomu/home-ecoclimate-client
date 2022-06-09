@@ -1,12 +1,10 @@
 #include <ESP8266WiFi.h>
 #include "sensors.h"
 
-static const String SSID("NombreConexion");
-static const String PSK("ContraseñaConexion");
+const String SSID("NombreConexion");
+const String PSK("ContraseñaConexion");
 
 void setup_wifi() {
-    delay(10);
-
     Serial.println();
     Serial.print("Connecting to ");
     Serial.println(SSID);
@@ -31,9 +29,9 @@ void setup_wifi() {
 }
 
 void setup() {
-  Serial.begin(9600);
-  setupSensors("unique");
-  setup_wifi();
+    Serial.begin(9600);
+    setup_wifi();
+    setupSensors("unique");
 }
 
 void loop() {

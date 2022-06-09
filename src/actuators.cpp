@@ -1,3 +1,4 @@
+#include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "actuators.h"
 #include "drivers/MotorFanSpeed.h"
@@ -6,7 +7,8 @@
 
 static const String mqttServer("192.168.0.155");
 
-static PubSubClient client;
+static WiFiClient wifiC;
+static PubSubClient client(wifiC);
 static ServoTempChange tempServo(4);      // D2
 static ServoWB angleServo(0);             // D3
 static MotorFanSpeed motor(14, 12, 13);   // D5, D6, D7
@@ -71,9 +73,8 @@ void callback(char *topic, byte *payload, unsigned int length) {
     });
 }
 
-void setupActuators(WiFiClient espClient, String gid) {
+void setupActuators(const String gid) {
     groupId = gid;
-    PubSubClient client(espClient);
     client.setServer(mqttServer.c_str(), 1883);
     client.setCallback(callback);
 }
