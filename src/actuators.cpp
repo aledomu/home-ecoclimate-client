@@ -19,6 +19,9 @@ void reconnect() {
         Serial.print("Attempting MQTT connection...");
         if (client.connect("ESP8266Client")) {
             Serial.println("connected");
+            client.subscribe((groupId + "/tempIndex").c_str(), 1);
+            client.subscribe((groupId + "/fanSpeed").c_str(), 1);
+            client.subscribe((groupId + "/angle").c_str(), 1);
         } else {
             Serial.print("failed, rc=");
             Serial.print(client.state());
@@ -36,20 +39,21 @@ void callbackAdapter(char *topic_, byte *payload_, unsigned int length, void (*f
 
     String payload;
     for (size_t i = 0; i < length; i++)
-        topic += ((char *) payload_)[i];
+        payload += ((char *) payload_)[i];
 
     f(topic, payload);
 }
 
 void callback(char *topic, byte *payload, unsigned int length) {
     callbackAdapter(topic, payload, length, [](String topic, String payload) {
-        Serial.println("Etiqueta: " + topic + ", mensaje: " + payload);
-
         if (topic == groupId + "/tempIndex") {
             int8_t value = (int8_t) atoi(payload.c_str());
 
             tempServo.setTempChange(value);
-            Serial.println("Etiqueta: tempIndex; payload: ");
+
+            Serial.print("Etiqueta: ");
+            Serial.print(topic);
+            Serial.print("; payload: ");
             Serial.print(payload);
             Serial.print("; valor: ");
             Serial.println(value);
@@ -57,7 +61,10 @@ void callback(char *topic, byte *payload, unsigned int length) {
             uint8_t value = (uint8_t) atoi(payload.c_str());
 
             motor.setFanSpeed(value);
-            Serial.println("Etiqueta: tempIndex; payload: ");
+
+            Serial.print("Etiqueta: ");
+            Serial.print(topic);
+            Serial.print("; payload: ");
             Serial.print(payload);
             Serial.print("; valor: ");
             Serial.println(value);
@@ -65,7 +72,10 @@ void callback(char *topic, byte *payload, unsigned int length) {
             uint8_t value = (uint8_t) atoi(payload.c_str());
 
             angleServo.setAngle(value);
-            Serial.println("Etiqueta: tempIndex; payload: ");
+
+            Serial.print("Etiqueta: ");
+            Serial.print(topic);
+            Serial.print("; payload: ");
             Serial.print(payload);
             Serial.print("; valor: ");
             Serial.println(value);
