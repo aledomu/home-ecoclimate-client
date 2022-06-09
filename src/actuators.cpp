@@ -44,41 +44,34 @@ void callbackAdapter(char *topic_, byte *payload_, unsigned int length, void (*f
     f(topic, payload);
 }
 
+template <class T>
+void handleMessage(String topic, String payload, void (*setDevice)(T)) {
+    T value = (T) atoi(payload.c_str());
+
+    setDevice(value);
+
+    Serial.print("Etiqueta: ");
+    Serial.print(topic);
+    Serial.print("; payload: ");
+    Serial.print(payload);
+    Serial.print("; valor: ");
+    Serial.println(value);
+}
+
 void callback(char *topic, byte *payload, unsigned int length) {
     callbackAdapter(topic, payload, length, [](String topic, String payload) {
         if (topic == groupId + "/tempIndex") {
-            int8_t value = (int8_t) atoi(payload.c_str());
-
-            tempServo.setTempChange(value);
-
-            Serial.print("Etiqueta: ");
-            Serial.print(topic);
-            Serial.print("; payload: ");
-            Serial.print(payload);
-            Serial.print("; valor: ");
-            Serial.println(value);
+            handleMessage<int8_t>(topic, payload, [](int8_t value) {
+                tempServo.setTempChange(value);
+            });
         } else if (topic == groupId + "/fanSpeed") {
-            uint8_t value = (uint8_t) atoi(payload.c_str());
-
-            motor.setFanSpeed(value);
-
-            Serial.print("Etiqueta: ");
-            Serial.print(topic);
-            Serial.print("; payload: ");
-            Serial.print(payload);
-            Serial.print("; valor: ");
-            Serial.println(value);
+            handleMessage<uint8_t>(topic, payload, [](uint8_t value) {
+                motor.setFanSpeed(value);
+            });
         } else if (topic == groupId + "/angle") {
-            uint8_t value = (uint8_t) atoi(payload.c_str());
-
-            angleServo.setAngle(value);
-
-            Serial.print("Etiqueta: ");
-            Serial.print(topic);
-            Serial.print("; payload: ");
-            Serial.print(payload);
-            Serial.print("; valor: ");
-            Serial.println(value);
+            handleMessage<uint8_t>(topic, payload, [](uint8_t value) {
+                angleServo.setAngle(value);
+            });
         }
     });
 }
