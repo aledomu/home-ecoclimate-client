@@ -22,9 +22,11 @@ void handleSensors() {
         String humidBody;
         serializeJson(humidJson, humidBody);
         String humidResponse;
-        client.post("/humidity", humidBody.c_str(), &humidResponse);
+        int code = client.post("/humidity", humidBody.c_str(), &humidResponse);
         Serial.print("Humidity POST result: ");
-        Serial.println(humidResponse);
+        Serial.print(humidResponse);
+        Serial.print("; Return code: ");
+        Serial.println(code);
     }
 
     DHTResult<float> tempMeasure = sensor.getTemperature();
@@ -37,9 +39,11 @@ void handleSensors() {
         String tempBody;
         serializeJson(tempJson, tempBody);
         String tempResponse;
-        client.post("/temperature", tempBody.c_str(), &tempResponse);
+        int code = client.post("/temperature", tempBody.c_str(), &tempResponse);
         Serial.print("Temperature POST result: ");
-        Serial.println(tempResponse);
+        Serial.print(tempResponse);
+        Serial.print("; Return code: ");
+        Serial.println(code);
     }
 
     delay(10000);
