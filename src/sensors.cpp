@@ -11,40 +11,52 @@ void setupSensors(String gid) {
     groupId = gid;
 }
 
+template <class T, size_t N>
+void sendDHTMeasure(
+    String sensorName,
+    String sensorId,
+    String resourceAddress,
+    DHTResult<T> (*getMeasure)(),
+    void (*setMeasureInJson)(StaticJsonDocument<N>&, DHTResult<T>)
+) {
+    DHTResult<T> measure = getMeasure();
+    Serial.print(sensorName);
+    Serial.print(" error code: ");
+    Serial.print(measure.error);
+    Serial.print("; Value: ");
+    Serial.println(measure.result);
+    if (measure.error == SimpleDHTErrSuccess) {
+        StaticJsonDocument<N> json;
+        json["groupId"] = groupId;
+        json["sensorId"] = sensorId;
+        setMeasureInJson(json, measure);
+
+        String body;
+        serializeJson(json, body);
+        String response;
+        int code = client.post(resourceAddress.c_str(), body.c_str(), &response);
+        Serial.print(sensorName);
+        Serial.print(" POST return code: ");
+        Serial.println(code);
+    }
+}
+
 void handleSensors() {
-    DHTResult<float> humidMeasure = sensor.getHumidity();
-    if (humidMeasure.error == 0) {
-        StaticJsonDocument<100> humidJson;
-        humidJson["groupId"] = groupId;
-        humidJson["sensorId"] = "test-humid";
-        humidJson["ratio"] = humidMeasure.result;
+    sendDHTMeasure<float, 200>(
+        "Humidity",
+        "test-humid",
+        "/humidity",
+        []() { return sensor.getHumidity(); },
+        [](auto humidJson, auto humidMeasure) { humidJson["ratio"] = humidMeasure.result; }
+    );
 
-        String humidBody;
-        serializeJson(humidJson, humidBody);
-        String humidResponse;
-        int code = client.post("/humidity", humidBody.c_str(), &humidResponse);
-        Serial.print("Humidity POST result: ");
-        Serial.print(humidResponse);
-        Serial.print("; Return code: ");
-        Serial.println(code);
-    }
-
-    DHTResult<float> tempMeasure = sensor.getTemperature();
-    if (tempMeasure.error == 0) {
-        StaticJsonDocument<100> tempJson;
-        tempJson["groupId"] = groupId;
-        tempJson["sensorId"] = "test-temp";
-        tempJson["celsius"] = tempMeasure.result;
-
-        String tempBody;
-        serializeJson(tempJson, tempBody);
-        String tempResponse;
-        int code = client.post("/temperature", tempBody.c_str(), &tempResponse);
-        Serial.print("Temperature POST result: ");
-        Serial.print(tempResponse);
-        Serial.print("; Return code: ");
-        Serial.println(code);
-    }
+    sendDHTMeasure<float, 200>(
+        "Temperature",
+        "test-temp",
+        "/temperature",
+        []() { return sensor.getTemperature(); },
+        [](auto tempJson, auto tempMeasure) { tempJson["celsius"] = tempMeasure.result; }
+    );
 
     delay(10000);
 }

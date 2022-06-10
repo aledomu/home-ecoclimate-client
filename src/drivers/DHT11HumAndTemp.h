@@ -4,7 +4,7 @@
 
 template <class T>
 struct DHTResult {
-    uint16_t error;
+    int error;
     T result;
 };
 
