@@ -4,7 +4,7 @@
 #include "drivers/DHT11HumAndTemp.h"
 
 static RestClient client("192.168.251.93", 80);
-static DHT11HumAndTemp sensor(14);  // D5
+static DHT11HumAndTemp sensor(5);  // D1
 static String groupId;
 
 void setupSensors(String gid) {
