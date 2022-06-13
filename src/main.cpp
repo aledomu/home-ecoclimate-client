@@ -1,4 +1,9 @@
+// Nota: el sistema de actuadores y sensores son mutuamente excluyentes. Para
+//       habilitar uno u otro, descomentar las líneas comentadas y comentar
+//       la inmediatamente inferior.
+
 #include <ESP8266WiFi.h>
+// #include "actuators.h"
 #include "sensors.h"
 
 const String SSID("NombreConexion");
@@ -31,9 +36,11 @@ void setup_wifi() {
 void setup() {
     Serial.begin(9600);
     setup_wifi();
+    // setupActuators("unique");
     setupSensors("unique");
 }
 
 void loop() {
+    // handleActuators();
     handleSensors();
 }
