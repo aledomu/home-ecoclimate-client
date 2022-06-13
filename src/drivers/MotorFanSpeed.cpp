@@ -4,5 +4,9 @@ MotorFanSpeed::MotorFanSpeed(uint8_t speedPin, uint8_t forwardPin, uint8_t backw
     motor(speedPin, forwardPin, backwardPin) {}
 
 void MotorFanSpeed::setFanSpeed(uint8_t fanSpeed) {
-    motor.forward(fanSpeed);
+    if (fanSpeed == 0) {
+        motor.stop();
+    } else {
+        motor.forward(fanSpeed);
+    }
 }
