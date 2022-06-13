@@ -9,5 +9,11 @@ ServoWB::ServoWB(uint8_t pin, uint16_t min, uint16_t max) {
 }
 
 void ServoWB::setAngle(uint8_t angle) {
-    servo.write(angle > 180 ? 180 : angle);
+    servo.write(map(
+        angle,
+        std::numeric_limits<uint8_t>::min(),
+        std::numeric_limits<uint8_t>::max(),
+        0,
+        180
+    ));
 }

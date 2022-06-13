@@ -13,5 +13,11 @@ ServoTempChange::ServoTempChange(uint8_t servoPin, uint16_t servoMin, uint16_t s
 }
 
 void ServoTempChange::setTempChange(int8_t tempChange) {
-    servo.write((int) map(tempChange, -100, 100, 0, 180));
+    servo.write((int) map(
+        tempChange,
+        std::numeric_limits<int8_t>::min(),
+        std::numeric_limits<int8_t>::max(),
+        0,
+        180
+    ));
 }
